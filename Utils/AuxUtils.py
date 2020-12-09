@@ -1,7 +1,7 @@
 import math
 import numpy as np 
 import pandas as pd
-from itertools import combinations_with_replacement
+from itertools import combinations_with_replacement, combination
 
 def to_onehot(x, n_col=None):
     if not n_col:
@@ -114,3 +114,30 @@ def polynomial_features(x, degree):
     for i, index_combs in enumerate(combinations):  
         x_new[:, i] = np.prod(x[:, index_combs], axis=1)
     return x_new
+
+class PolynomialKernel():
+
+    def __init__ (self, degree = 1, include_bias = True, interaction_only = False):
+        # degree is the required degree of the output
+        # include_bias indicates whether a column of 1s should be present (indicates vertex)
+        self.degree = degree 
+        self.include_bias = include_bias
+        self.interaction_only = interaction_only
+
+    def kernelize (self, X):
+        X = np.asarray(X)
+        if (X.ndim == 1):
+            X = X[None, :]
+        n_samples, n_features = np.shape(X)
+        start = 0
+        if (!self.include_bias): 
+            start = 1
+        combswr = [combinations_with_replacement(range(n_features), i) for i in range(start, self.degree + 1)]
+        if (self.interaction_only):
+            combswr = [combinations(range(n_features), i) for i in range(start, self.degree + 1)]
+        combinations = [item for sublist in combswr for item in sublist]
+        n_output_features = len(combinations)
+        X_new = np.empty((n_samples, n_output_features))
+        for i, index_combs in enumerate(combinations):  
+            X_new[:, i] = np.prod(X[:, index_combs], axis=1)
+        return X_new

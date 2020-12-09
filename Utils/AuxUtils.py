@@ -105,7 +105,7 @@ def minkowski_distance(x1, x2, p):
 def polynomial_features(x, degree):
     n_samples, n_features = np.shape(x)
     combswr = [combinations_with_replacement(range(n_features), i) for i in range(0, degree + 1)]
-    combinations = [item for sublist in combs for item in sublist]
+    combinations = [item for sublist in combswr for item in sublist]
     n_output_features = len(combinations)
     x_new = np.empty((n_samples, n_output_features))
     

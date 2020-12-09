@@ -119,8 +119,6 @@ def polynomial_features(x, degree):
     combinations = [item for sublist in combswr for item in sublist]
     n_output_features = len(combinations)
     x_new = np.empty((n_samples, n_output_features))
-    
     for i, index_combs in enumerate(combinations):  
         x_new[:, i] = np.prod(x[:, index_combs], axis=1)
-
     return x_new

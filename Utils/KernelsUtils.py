@@ -10,22 +10,24 @@ class PolynomialKernel():
         self.include_bias = include_bias
 
     def kernelize (self, X):
+        d = self.degree
+        ib = self.include_bias
         # X is the input features
         # we assume that X is an (n,m) array where n is the number of samples
         # and m is the number of features
         np.asarray(X)
         m = X.shape[1]
-        final_features = self.include_bias + self.degree*m 
+        final_features = ib + d*m 
         deg = 2
-        while (deg <= self.degree):
+        while (deg <= d):
                 final_features = final_features + list(combinations(range(m), deg)).size()
                 deg += 1
         X_out = np.ones((n, final_features))
         pos = 0
-        X_out[:, self.include_bias:m+self.include_bias] = X
-        pos = m+self.include_bias
+        X_out[:, ib:m+ib] = X
+        pos = m+ib
         deg = 2
-        while (deg <= self.degree):
+        while (deg <= d):
             combs_deg = list(combinations(range(m), deg))
             X_out[:, pos:pos+m] = X**deg
             pos = pos + m
@@ -35,4 +37,3 @@ class PolynomialKernel():
                 pos = pos + 1
             deg += 1
         return X_out
-

@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+import AuxUtils as au
 
 # Calculate the Gaussian probability distribution function for x
 def Gaussian(x, mean, std):
@@ -8,7 +9,7 @@ def Gaussian(x, mean, std):
 
 class GMM:
 	# init function
-	def __init__(self, n_clusters, max_iter=100, cluster_names=None):
+	def __init__(self, n_clusters=2, max_iter=100, cluster_names=None):
 		# number of clusters that the data will be split into
 		self.n_clusters = n_clusters
 		# number of iterations for the cluster										
@@ -75,3 +76,21 @@ class GMM:
 		for prob in probs:
 			cluster.append(self.cluster_names[prob.index(max(prob))])
 		return cluster
+
+class KNN():
+
+	def __init__(self, k=5):
+		self.k = k
+
+	def neighbor_class(self, neighbor_labels):
+		counts = np.bincount(neighbor_labels.astype('int'))
+		return counts.argmax()
+
+	def predict(self, x_test, x_train, y_train):
+		y_hat = np.empty(x_test.shape[0])
+		for i, sample in enumerate(x_test):
+			index = np.argsort([au.minkowski_distance(sample, x, 2) for x in x_train])[:self.k]
+			knn = np.array([y_train[i] for i in index])
+			y_hat[i] = self.count(knn)
+		return y_hat
+

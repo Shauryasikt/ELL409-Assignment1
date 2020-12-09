@@ -87,17 +87,6 @@ def standardize(x):
             x_std[:, col] = (x_std[:, col] - mean[col]) / std[col]
     return x_std
 
-def standardize_2 (X):
-	X = np.asarray(X)
-	m = X.shape[1]
-	#mean = np.array(m)
-	#var = np.array(m)
-	for i in range (m):
-		mean = np.mean(X[:, i])
-		var = np.mean((X[:, i] - mean)**2)
-		X[:, i] = (X[:, i]-mean)/np.sqrt(var)
-	return X
-
 #vector to diagonal matrix
 def to_diagonal(x):
     matrix = np.zeros((len(x), len(x)))

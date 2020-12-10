@@ -25,8 +25,11 @@ def rmse_calc(actual, predicted):
 def r2_calc(actual, predicted):
 	y = np.asarray(actual)
 	yhat = np.asarray(predicted)
-	error = y - yhat	
-	return 1-(sum(error**2)/sum((y-np.mean(y))**2))
+	error = y - yhat
+	if sum((y-np.mean(y))**2))!=0:
+		return 1-(sum(error**2)/sum((y-np.mean(y))**2))
+	else:
+		return 1
 
 # Calculate cross entropy
 def cross_entropy_calc(actual, predicted):

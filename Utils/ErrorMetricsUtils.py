@@ -26,7 +26,7 @@ def r2_calc(actual, predicted):
 	y = np.asarray(actual)
 	yhat = np.asarray(predicted)
 	error = y - yhat
-	if sum((y-np.mean(y))**2))!=0:
+	if sum((y-np.mean(y))**2)!=0:
 		return 1-(sum(error**2)/sum((y-np.mean(y))**2))
 	else:
 		return 1

@@ -27,7 +27,7 @@ def separate_by_feature(x, feature, threshold):
     if isinstance(threshold, int) or isinstance(threshold, float):			#for int and float thresholds
         split_fn = lambda sample: sample[feature] >= threshold
     else:																	#for other "thresholds"
-        split_fn = lambda sample: sample[feature] == thresholds
+        split_fn = lambda sample: sample[feature] == threshold
     x_0 = np.array([sample for sample in x if split_fn(sample)])
     x_1 = np.array([sample for sample in x if not split_fn(sample)])
 

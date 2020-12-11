@@ -31,9 +31,6 @@ def r2_calc(actual, predicted):
 	else:
 		return 1
 
-# # Calculate cross entropy
-# def cross_entropy_calc(actual, predicted):
-
 # Calculate KL Divergence in bits
 def kl_div_calc(actual, predicted):
 	actual = np.asarray(actual)

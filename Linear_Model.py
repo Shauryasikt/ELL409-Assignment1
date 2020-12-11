@@ -1,32 +1,8 @@
-import numpy as np
-from Utils import ErrorMetricsUtils as err
-from Utils import CorrectnessMetricUtils as cmu
-from Utils import AuxUtils as auxu
-import random
-import time
-
-#Lasso
-class l1_regularization():
-    def __init__(self, alpha):
-        self.alpha = alpha
-    def __call__(self, W):
-        return self.alpha * np.linalg.norm(W)
-    def grad(self, W):
-        return self.alpha * np.sign(W)
-#Ridge
-class l2_regularization():
-    def __init__(self, alpha):
-        self.alpha = alpha
-    def __call__(self, W):
-        return self.alpha * 0.5 *  W.T@W
-    def grad(self, W):
-        return self.alpha * W
-
 class LinearModel():  
     
-    def __init__ (self, regression_degree = 50, l1_alpha = 0, l2_alpha = 0, loss = "mse", model_type = "linear", 
+    def __init__ (self, regression_degree = 5, l1_alpha = 0, l2_alpha = 0, loss = "mse", model_type = "linear", 
                   convergence = "Stochastic Gradiet Descent", include_bias = True, standardize = True, 
-                  normalize = True, learning_type = "normalized", max_iter = 1e+5, learning_rate = 0.1, 
+                  normalize = True, learning_type = "normalized", max_iter = 1e+4, learning_rate = 0.1, 
                   epsilon = 0.01, print_stuff = "prio"):
         self.l1_alpha = l1_alpha
         self.l2_alpha = l2_alpha
@@ -39,7 +15,7 @@ class LinearModel():
         self.max_iter = max_iter
         self.learning_rate = learning_rate
         self.epsilon = epsilon
-        self.theta = None
+        self.theta = []
         self.fitted = False
         self.print_stuff = print_stuff
         self.poly = auxu.PolynomialKernel(regression_degree, include_bias)
@@ -49,6 +25,31 @@ class LinearModel():
             self.g = lambda x: 1 / (1 + np.exp(-x))
         else:
             self.g = lambda x:x
+            
+    def init_theta (self, X_train):
+        if (X_train.ndim == 1):
+            X_train = X_train[None, :]
+        if (self.standardize):
+            X_train = auxu.standardize(X_train)
+        if (self.normalize):
+            X_train = auxu.normalize(X_train)
+        Xk_train = self.poly.kernelize(X_train)
+        self.theta = np.zeros(Xk_train.shape[1])
+        return
+    
+    def repeat_fit (self, X_train, y_train):
+        if (X_train.ndim == 1):
+            X_train = X_train[None, :]
+        if (self.standardize):
+            X_train = auxu.standardize(X_train)
+        if (self.normalize):
+            X_train = auxu.normalize(X_train)
+        Xk_train = self.poly.kernelize(X_train)
+        if (not len(self.theta) == Xk_train.shape[1]):
+            self.init_theta(X_train)
+        self.call_convergence(Xk_train, y_train)
+        self.fitted = True
+        return
     
     def call_convergence (self, X, y):
         if (self.convergence == "Stochatic Gradient Descent"):
@@ -94,6 +95,10 @@ class LinearModel():
         else: 
             # some error statement
             return -1 
+    
+    def log_predict (self, X_test):
+        disc = self.predict (X_test)
+        return np.piecewise(disc, [disc < 0.5, disc >= 0.5], [0, 1]) 
     
     def check_fitted (self, Xk_test):
         return self.fitted and self.theta.shape[0] == Xk_test.shape[1]

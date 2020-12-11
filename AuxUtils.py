@@ -3,16 +3,6 @@ import numpy as np
 import pandas as pd
 from itertools import combinations_with_replacement
 
-def to_onehot(x, n_col=None):
-	if not n_col:
-		n_col = np.amax(x) + 1
-	onehot = np.zeros((x.shape[0], n_col))
-	onehot[np.arange(x.shape[0]), x] = 1
-	return onehot
-
-def to_nominal(x):
-	return np.argmax(x, axis=1)
-
 #think what this fn does
 def shuffle_data(x, y, seed=None):
 	if seed:
